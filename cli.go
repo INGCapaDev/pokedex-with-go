@@ -13,6 +13,7 @@ const (
 	HELP_CMD = "help"
 	EXIT_CMD = "exit"
 	MAP_CMD  = "map"
+	MAPB_CMD = "mapb"
 )
 
 type config struct {
@@ -46,7 +47,7 @@ func startREPL(cfg *config) {
 
 		err := command.callback(cfg)
 		if err != nil {
-			fmt.Printf("error executing %s command: %v\n", command.name, err)
+			fmt.Printf("\nerror executing %s command: %v\n\n", command.name, err)
 		}
 
 	}
@@ -80,6 +81,11 @@ func getCommands() map[string]cliCommand {
 			name:        MAP_CMD,
 			description: "Show the next page of locations",
 			callback:    cmdMap,
+		},
+		MAPB_CMD: {
+			name:        MAPB_CMD,
+			description: "Show the previous page of locations",
+			callback:    cmdMapB,
 		},
 	}
 }

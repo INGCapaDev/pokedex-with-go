@@ -27,7 +27,7 @@ func cmdMap(cfg *config) error {
 
 func cmdMapB(cfg *config) error {
 	if cfg.prevLocationsURL == nil {
-		return fmt.Errorf("error: you're on the first page cannot navigate back")
+		return fmt.Errorf("you're on the first page cannot navigate back")
 	}
 	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
 	if err != nil {
