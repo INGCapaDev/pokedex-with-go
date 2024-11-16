@@ -5,14 +5,23 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
 const (
 	HELP_CMD = "help"
 	EXIT_CMD = "exit"
+	MAP_CMD  = "map"
 )
 
-func startREPL() {
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
+
+func startREPL(cfg *config) {
 	for true {
 		reader := bufio.NewScanner(os.Stdin)
 		fmt.Print("Enter command > ")
@@ -35,7 +44,7 @@ func startREPL() {
 			continue
 		}
 
-		err := command.callback()
+		err := command.callback(cfg)
 		if err != nil {
 			fmt.Printf("error executing %s command: %v\n", command.name, err)
 		}
@@ -52,7 +61,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(cfg *config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -66,6 +75,11 @@ func getCommands() map[string]cliCommand {
 			name:        EXIT_CMD,
 			description: "Exit the program",
 			callback:    cmdExit,
+		},
+		MAP_CMD: {
+			name:        MAP_CMD,
+			description: "Show the next page of locations",
+			callback:    cmdMap,
 		},
 	}
 }

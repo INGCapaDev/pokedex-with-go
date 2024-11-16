@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func cmdHelp() error {
+func cmdHelp(cfg *config) error {
 	fmt.Printf("\nUsage: <command>")
 	for _, cmd := range getCommands() {
 		fmt.Printf("\n%s: %s", cmd.name, cmd.description)
