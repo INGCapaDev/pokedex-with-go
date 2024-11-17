@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
@@ -46,22 +45,21 @@ func cmdMapB(cfg *config, args ...string) error {
 }
 
 func logLocations(locations pokeapi.RespShallowLocations) error {
-	firstURLWords := strings.Split(locations.Results[0].URL, "/")
-	lastURLWords := strings.Split(locations.Results[len(locations.Results)-1].URL, "/")
+	firstPosition := getPositionFromURL(locations.Results[0].URL)
+	lastPosition := getPositionFromURL(locations.Results[len(locations.Results)-1].URL)
 
-	firstPosition, err := strconv.Atoi(firstURLWords[len(firstURLWords)-2])
-	if err != nil {
-		return fmt.Errorf("error converting location position to int: %w", err)
-	}
+	fmt.Printf("\nShowing from %s to %s of %d locations", firstPosition, lastPosition, locations.Count)
 
-	fmt.Printf("\nShowing from %d to %s of %d locations", firstPosition, lastURLWords[len(lastURLWords)-2], locations.Count)
-
-	for idx, location := range locations.Results {
-
-		position := idx + firstPosition
-		fmt.Printf("\n %d - %s.", position, location.Name)
+	for _, location := range locations.Results {
+		position := getPositionFromURL(location.URL)
+		fmt.Printf("\n %04s - %s.", position, location.Name)
 	}
 
 	fmt.Printf("\n\n")
 	return nil
+}
+
+func getPositionFromURL(url string) string {
+	words := strings.Split(url, "/")
+	return words[len(words)-2]
 }
