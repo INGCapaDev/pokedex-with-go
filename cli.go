@@ -98,7 +98,7 @@ func getCommands() map[string]cliCommand {
 			callback:    cmdMapB,
 		},
 		EXPLORE_CMD: {
-			name:        EXPLORE_CMD,
+			name:        EXPLORE_CMD + " <location-name>",
 			description: "Explore a location",
 			callback:    cmdExplore,
 		},
