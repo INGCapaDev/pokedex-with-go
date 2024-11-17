@@ -8,7 +8,7 @@ import (
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
-func cmdMap(cfg *config) error {
+func cmdMap(cfg *config, args ...string) error {
 	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
 		return err
@@ -25,7 +25,7 @@ func cmdMap(cfg *config) error {
 	return nil
 }
 
-func cmdMapB(cfg *config) error {
+func cmdMapB(cfg *config, args ...string) error {
 	if cfg.prevLocationsURL == nil {
 		return fmt.Errorf("you're on the first page cannot navigate back")
 	}
