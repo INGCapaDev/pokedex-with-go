@@ -11,25 +11,25 @@ func cmdCatch(cfg *config, args ...string) error {
 		return fmt.Errorf("you must provide a pokemon name")
 	}
 
-	if _, exists := cfg.caughPokemon[args[0]]; exists {
-		fmt.Printf("you already captured a %s\n\n", args[0])
-		return nil
-	}
-
 	pokemonResponse, err := cfg.pokeapiClient.GetPokemon(args[0])
 	if err != nil {
 		return err
 	}
 
-	pokeResistance := rand.New(rand.NewSource(int64(pokemonResponse.BaseExperience))).Int()
-
-	if pokeResistance < 40 {
-		fmt.Printf("\n🎉 Congrats! you captured a wild %s", args[0])
-		cfg.caughPokemon[args[0]] = pokemonResponse
-		fmt.Printf("\n %s has been registered in your pokedex!\n\n", args[0])
+	if poke, exists := cfg.caughPokemon[pokemonResponse.Name]; exists {
+		fmt.Printf("you already captured a %s\n\n", poke.Name)
 		return nil
 	}
 
-	fmt.Printf("\n😢 Unfortunately %s has escaped, Try again in a few moment!\n\n", args[0])
+	fmt.Printf("\n Throwing a pokeball at %s...", pokemonResponse.Name)
+	pokeResistance := rand.Intn(pokemonResponse.BaseExperience + 1)
+	if pokeResistance > 40 {
+		fmt.Printf("\n😢 Unfortunately %s has escaped, Try again in a few moment!\n\n", pokemonResponse.Name)
+		return nil
+	}
+
+	fmt.Printf("\n🎉 Congrats! you captured a wild %s", pokemonResponse.Name)
+	cfg.caughPokemon[pokemonResponse.Name] = pokemonResponse
+	fmt.Printf("\n %s has been registered in your pokedex!\n\n", pokemonResponse.Name)
 	return nil
 }

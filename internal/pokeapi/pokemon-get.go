@@ -30,7 +30,7 @@ func (c *Client) GetPokemon(name string) (Pokemon, error) {
 
 	if res.StatusCode != http.StatusOK {
 		if res.StatusCode == http.StatusNotFound {
-			return Pokemon{}, fmt.Errorf("invalid location: location %s not found", name)
+			return Pokemon{}, fmt.Errorf("invalid pokemon name: %s not found", name)
 		}
 		return Pokemon{}, fmt.Errorf("error non-OK HTTP status code: %d", res.StatusCode)
 	}
@@ -46,5 +46,5 @@ func (c *Client) GetPokemon(name string) (Pokemon, error) {
 		return Pokemon{}, fmt.Errorf("error decoding response body %w", err)
 	}
 
-	return Pokemon{}, nil
+	return pokemonResponse, nil
 }
