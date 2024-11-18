@@ -21,7 +21,7 @@ func (c *Client) GetLocation(name string) (Location, error) {
 
 	res, err := c.httpClient.Get(url)
 	if err != nil {
-		return Location{}, fmt.Errorf("error creating the request: %w", err)
+		return Location{}, fmt.Errorf("error making the request: %w", err)
 	}
 
 	if res.StatusCode != http.StatusOK {

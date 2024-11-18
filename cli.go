@@ -20,10 +20,12 @@ const (
 	MAP_CMD     = "map"
 	MAPB_CMD    = "mapb"
 	EXPLORE_CMD = "explore"
+	CATCH_CMD   = "catch"
 )
 
 type config struct {
 	pokeapiClient    pokeapi.Client
+	caughPokemon     map[string]pokeapi.Pokemon
 	nextLocationsURL *string
 	prevLocationsURL *string
 }
@@ -101,6 +103,11 @@ func getCommands() map[string]cliCommand {
 			name:        EXPLORE_CMD + " <location-name>",
 			description: "Explore a location",
 			callback:    cmdExplore,
+		},
+		CATCH_CMD: {
+			name:        CATCH_CMD + " <pokemon-name>",
+			description: "Make an attempt to catch a wild pokemon",
+			callback:    cmdCatch,
 		},
 	}
 }
