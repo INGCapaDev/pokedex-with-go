@@ -14,16 +14,6 @@ type cmd struct {
 	cmd  string
 }
 
-const (
-	HELP_CMD    = "help"
-	EXIT_CMD    = "exit"
-	MAP_CMD     = "map"
-	MAPB_CMD    = "mapb"
-	EXPLORE_CMD = "explore"
-	CATCH_CMD   = "catch"
-	INSPECT_CMD = "inspect"
-)
-
 type config struct {
 	pokeapiClient    pokeapi.Client
 	caughtPokemon    map[string]pokeapi.Pokemon
@@ -114,6 +104,11 @@ func getCommands() map[string]cliCommand {
 			name:        INSPECT_CMD + " <pokemon-name>",
 			description: "Display the basic info of a captured pokemon",
 			callback:    cmdInspect,
+		},
+		POKEDEX_CMD: {
+			name:        POKEDEX_CMD,
+			description: "Display all the registered pokemon in your pokedex",
+			callback:    cmdPokedex,
 		},
 	}
 }
