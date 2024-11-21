@@ -21,6 +21,7 @@ const (
 	MAPB_CMD    = "mapb"
 	EXPLORE_CMD = "explore"
 	CATCH_CMD   = "catch"
+	INSPECT_CMD = "inspect"
 )
 
 type config struct {

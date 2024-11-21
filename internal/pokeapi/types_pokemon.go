@@ -1,5 +1,16 @@
 package pokeapi
 
+type PokemonStat struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
+type PokemonStats struct {
+	BaseStat int         `json:"base_stat"`
+	Effort   int         `json:"effort"`
+	Stat     PokemonStat `json:"stat"`
+}
+
 type Pokemon struct {
 	Abilities []struct {
 		Ability struct {
@@ -226,14 +237,7 @@ type Pokemon struct {
 			} `json:"generation-viii"`
 		} `json:"versions"`
 	} `json:"sprites"`
-	Stats []struct {
-		BaseStat int `json:"base_stat"`
-		Effort   int `json:"effort"`
-		Stat     struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		} `json:"stat"`
-	} `json:"stats"`
+	Stats []PokemonStats `json:"stats"`
 	Types []struct {
 		Slot int `json:"slot"`
 		Type struct {
