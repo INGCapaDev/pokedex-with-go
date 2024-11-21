@@ -26,7 +26,7 @@ const (
 
 type config struct {
 	pokeapiClient    pokeapi.Client
-	caughPokemon     map[string]pokeapi.Pokemon
+	caughtPokemon    map[string]pokeapi.Pokemon
 	nextLocationsURL *string
 	prevLocationsURL *string
 }
@@ -109,6 +109,11 @@ func getCommands() map[string]cliCommand {
 			name:        CATCH_CMD + " <pokemon-name>",
 			description: "Make an attempt to catch a wild pokemon",
 			callback:    cmdCatch,
+		},
+		INSPECT_CMD: {
+			name:        INSPECT_CMD + " <pokemon-name>",
+			description: "Display the basic info of a captured pokemon",
+			callback:    cmdInspect,
 		},
 	}
 }

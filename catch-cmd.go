@@ -16,7 +16,7 @@ func cmdCatch(cfg *config, args ...string) error {
 		return err
 	}
 
-	if poke, exists := cfg.caughPokemon[pokemonResponse.Name]; exists {
+	if poke, exists := cfg.caughtPokemon[pokemonResponse.Name]; exists {
 		fmt.Printf("you already captured a %s\n\n", poke.Name)
 		return nil
 	}
@@ -29,7 +29,7 @@ func cmdCatch(cfg *config, args ...string) error {
 	}
 
 	fmt.Printf("\n🎉 Congrats! you captured a wild %s", pokemonResponse.Name)
-	cfg.caughPokemon[pokemonResponse.Name] = pokemonResponse
+	cfg.caughtPokemon[pokemonResponse.Name] = pokemonResponse
 	fmt.Printf("\n %s has been registered in your pokedex!\n\n", pokemonResponse.Name)
 	return nil
 }

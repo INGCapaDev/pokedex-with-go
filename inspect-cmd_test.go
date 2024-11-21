@@ -15,7 +15,7 @@ func TestInspectCMD(t *testing.T) {
 
 	mockConfig := &config{
 		pokeapiClient: pokeapi.Client{},
-		caughPokemon:  mockCaughtPokemon,
+		caughtPokemon: mockCaughtPokemon,
 	}
 
 	err := cmdInspect(mockConfig)
