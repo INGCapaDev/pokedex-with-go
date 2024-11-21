@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
 )
 
 type cmd struct {
@@ -14,14 +14,7 @@ type cmd struct {
 	cmd  string
 }
 
-type config struct {
-	pokeapiClient    pokeapi.Client
-	caughtPokemon    map[string]pokeapi.Pokemon
-	nextLocationsURL *string
-	prevLocationsURL *string
-}
-
-func startREPL(cfg *config) {
+func startREPL(cfg *config.TConfig) {
 	for true {
 		reader := bufio.NewScanner(os.Stdin)
 		fmt.Print("Enter command > ")
@@ -65,7 +58,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config, args ...string) error
+	callback    func(cfg *config.TConfig, args ...string) error
 }
 
 func getCommands() map[string]cliCommand {

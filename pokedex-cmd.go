@@ -1,10 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-func cmdPokedex(cfg *config, _ ...string) error {
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
+)
+
+func cmdPokedex(cfg *config.TConfig, _ ...string) error {
 	fmt.Println("\n Your Pokedex:")
-	for _, pokemon := range cfg.caughtPokemon {
+	for _, pokemon := range cfg.CaughtPokemon {
 		fmt.Println("-", pokemon.Name)
 	}
 	fmt.Println()

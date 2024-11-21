@@ -1,14 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-func cmdExplore(cfg *config, args ...string) error {
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
+)
+
+func cmdExplore(cfg *config.TConfig, args ...string) error {
 	if len(args) != 1 {
 		fmt.Printf("\nUsage: %s <location-name>", EXPLORE_CMD)
 		return fmt.Errorf("you must provide a location name")
 	}
 
-	locationResponse, err := cfg.pokeapiClient.GetLocation(args[0])
+	locationResponse, err := cfg.PokeapiClient.GetLocation(args[0])
 	if err != nil {
 		return err
 	}

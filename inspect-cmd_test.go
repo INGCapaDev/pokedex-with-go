@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
@@ -13,9 +14,9 @@ func TestInspectCMD(t *testing.T) {
 		"squirtle":  {},
 	}
 
-	mockConfig := &config{
-		pokeapiClient: pokeapi.Client{},
-		caughtPokemon: mockCaughtPokemon,
+	mockConfig := &config.TConfig{
+		PokeapiClient: pokeapi.Client{},
+		CaughtPokemon: mockCaughtPokemon,
 	}
 
 	err := cmdInspect(mockConfig)

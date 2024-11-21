@@ -1,14 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-func cmdInspect(cfg *config, args ...string) error {
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
+)
+
+func cmdInspect(cfg *config.TConfig, args ...string) error {
 	if len(args) != 1 {
 		fmt.Printf("\nUsage: %s <pokemon-name>", INSPECT_CMD)
 		return fmt.Errorf("you must provide a pokemon name")
 	}
 
-	pokemon, ok := cfg.caughtPokemon[args[0]]
+	pokemon, ok := cfg.CaughtPokemon[args[0]]
 	if !ok {
 		return fmt.Errorf("you have not caught that pokemon yet")
 	}

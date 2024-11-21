@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
 func main() {
 	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
-	cfg := &config{
-		pokeapiClient: pokeClient,
-		caughtPokemon: map[string]pokeapi.Pokemon{},
+	cfg, err := config.GetConfig(pokeClient)
+	if err != nil {
+		// Panic if there is an error reading the configuration file
+		panic(err)
 	}
 
 	welcome()

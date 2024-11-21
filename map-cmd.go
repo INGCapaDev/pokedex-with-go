@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ingcapadev/pokedex-with-go/internal/config"
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
-func cmdMap(cfg *config, args ...string) error {
-	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
+func cmdMap(cfg *config.TConfig, args ...string) error {
+	locationsResponse, err := cfg.PokeapiClient.ListLocations(cfg.NextLocationsURL)
 	if err != nil {
 		return err
 	}
@@ -18,17 +19,17 @@ func cmdMap(cfg *config, args ...string) error {
 		return err
 	}
 
-	cfg.nextLocationsURL = locationsResponse.Next
-	cfg.prevLocationsURL = locationsResponse.Previous
+	cfg.NextLocationsURL = locationsResponse.Next
+	cfg.PrevLocationsURL = locationsResponse.Previous
 
 	return nil
 }
 
-func cmdMapB(cfg *config, args ...string) error {
-	if cfg.prevLocationsURL == nil {
+func cmdMapB(cfg *config.TConfig, args ...string) error {
+	if cfg.PrevLocationsURL == nil {
 		return fmt.Errorf("you're on the first page cannot navigate back")
 	}
-	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
+	locationsResponse, err := cfg.PokeapiClient.ListLocations(cfg.PrevLocationsURL)
 	if err != nil {
 		return err
 	}
@@ -38,8 +39,8 @@ func cmdMapB(cfg *config, args ...string) error {
 		return err
 	}
 
-	cfg.nextLocationsURL = locationsResponse.Next
-	cfg.prevLocationsURL = locationsResponse.Previous
+	cfg.NextLocationsURL = locationsResponse.Next
+	cfg.PrevLocationsURL = locationsResponse.Previous
 
 	return nil
 }
