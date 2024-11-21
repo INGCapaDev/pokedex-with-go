@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -33,11 +34,13 @@ func newConfig(pokeClient pokeapi.Client) *TConfig {
 }
 
 func (cfg *TConfig) loadDataFromDisk() error {
+	fmt.Println("PokeCLI: Ensuring configuration folder exists...")
 	err := ensureConfigFolderExists()
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("PokeCLI: Loading caught pokemons from disk...")
 	err = loadCaughtPokemonsFromDisk(cfg)
 	if err != nil {
 		return err

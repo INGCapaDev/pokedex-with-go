@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	fmt.Println("PokeCLI: Loading your data...")
 	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
 	cfg, err := config.GetConfig(pokeClient)
 	if err != nil {
@@ -21,7 +22,9 @@ func main() {
 }
 
 func welcome() {
-	fmt.Println("Welcome to pokecli! A simple CLI for Pokemon data")
+	// clear the screen before showing the welcome message
+	fmt.Print("\033[H\033[2J")
+	fmt.Println("Welcome to PokeCLI! A simple CLI pokemon game")
 	fmt.Println("Developed by: INGCapaDev with ❤️ ")
 	fmt.Println("\nType 'help' for help or 'exit' to exit the program")
 }
