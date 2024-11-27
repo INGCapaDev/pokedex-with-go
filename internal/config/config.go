@@ -18,14 +18,13 @@ func GetConfig(pokeClient pokeapi.Client) (*TConfig, error) {
 	if err != nil {
 		return cfg, err
 	}
-
 	return cfg, nil
 }
 
 func newConfig(pokeClient pokeapi.Client) *TConfig {
 	return &TConfig{
 		PokeapiClient:    pokeClient,
-		Inventory:        Inventory{Items: make(map[string]InventoryItemInfo), Balance: 0, MaxCapacity: 15},
+		Inventory:        Inventory{Items: make(map[string]InventoryItemInfo), Balance: INITIAL_BALANCE, MaxCapacity: INITIAL_CAPACITY},
 		CaughtPokemon:    make(map[string]pokeapi.Pokemon),
 		NextLocationsURL: nil,
 		PrevLocationsURL: nil,
