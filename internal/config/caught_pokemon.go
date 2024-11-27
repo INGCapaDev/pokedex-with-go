@@ -2,20 +2,14 @@ package config
 
 import (
 	"encoding/json"
-	"os"
 
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
 
 func loadCaughtPokemonsFromDisk(cfg *TConfig) error {
-	configLocation, err := getConfigLocation(CAUGHT_POKEMON_FILE)
+	fileData, err, notFound := readDataFromDisk(CAUGHT_POKEMON_FILE)
 	if err != nil {
-		return err
-	}
-
-	fileData, err := os.ReadFile(configLocation)
-	if err != nil {
-		if os.IsNotExist(err) {
+		if notFound {
 			return nil
 		}
 		return err
@@ -31,17 +25,7 @@ func (cfg *TConfig) CatchPokemon(pokemon pokeapi.Pokemon) error {
 
 	cfg.CaughtPokemon[pokemon.Name] = pokemon
 
-	data, err := json.MarshalIndent(cfg.CaughtPokemon, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	configLocation, err := getConfigLocation(CAUGHT_POKEMON_FILE)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(configLocation, data, 0644)
+	err := writeDataToDisk(cfg.CaughtPokemon, CAUGHT_POKEMON_FILE)
 	if err != nil {
 		return err
 	}

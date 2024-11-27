@@ -1,10 +1,7 @@
 package config
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/ingcapadev/pokedex-with-go/internal/pokeapi"
 )
@@ -12,6 +9,7 @@ import (
 const (
 	CONFIG_LOCATION_FOLDER = ".pokecli"
 	CAUGHT_POKEMON_FILE    = "caught_pokemon.json"
+	INVENTORY_FILE         = "inventory.json"
 )
 
 func GetConfig(pokeClient pokeapi.Client) (*TConfig, error) {
@@ -27,6 +25,7 @@ func GetConfig(pokeClient pokeapi.Client) (*TConfig, error) {
 func newConfig(pokeClient pokeapi.Client) *TConfig {
 	return &TConfig{
 		PokeapiClient:    pokeClient,
+		Inventory:        Inventory{Items: make(map[string]InventoryItemInfo), Balance: 0, MaxCapacity: 15},
 		CaughtPokemon:    make(map[string]pokeapi.Pokemon),
 		NextLocationsURL: nil,
 		PrevLocationsURL: nil,
@@ -46,34 +45,11 @@ func (cfg *TConfig) loadDataFromDisk() error {
 		return err
 	}
 
-	return nil
-}
-
-func ensureConfigFolderExists() error {
-	configLocation, err := getConfigLocation("/")
+	fmt.Println("PokeCLI: Loading inventory from disk...")
+	err = loadInventoryFromDisk(cfg)
 	if err != nil {
 		return err
 	}
 
-	if _, err := os.Stat(configLocation); os.IsNotExist(err) {
-		err := os.MkdirAll(configLocation, 0755)
-		if err != nil {
-			return err
-		}
-	}
-
 	return nil
-}
-
-func getConfigLocation(filename string) (string, error) {
-	if filename == "" {
-		return "", errors.New("filename cannot be empty")
-	}
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	configLocation := filepath.Join(homeDir, CONFIG_LOCATION_FOLDER, filename)
-	return configLocation, nil
 }
