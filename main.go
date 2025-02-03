@@ -12,6 +12,7 @@ func main() {
 	fmt.Println("PokeCLI: Loading your data...")
 	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
 	cfg, err := config.GetConfig(pokeClient)
+
 	if err != nil {
 		// Panic if there is an error reading the configuration file
 		panic(err)

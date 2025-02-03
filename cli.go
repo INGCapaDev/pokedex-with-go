@@ -103,5 +103,10 @@ func getCommands() map[string]cliCommand {
 			description: "Display all the registered pokemon in your pokedex",
 			callback:    cmdPokedex,
 		},
+		SHOP_CMD: {
+			name:        SHOP_CMD,
+			description: "Type 'help shop' for more information",
+			callback:    cmdShop,
+		},
 	}
 }
