@@ -6,6 +6,7 @@ type TConfig struct {
 	PokeapiClient    pokeapi.Client
 	CaughtPokemon    map[string]pokeapi.Pokemon
 	Inventory        Inventory
+	Shop             Shop
 	NextLocationsURL *string
 	PrevLocationsURL *string
 }

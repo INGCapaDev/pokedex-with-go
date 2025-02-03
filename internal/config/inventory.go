@@ -2,13 +2,14 @@ package config
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+
+	"github.com/ingcapadev/pokedex-with-go/internal/items"
 )
 
 const (
 	INITIAL_BALANCE  = 500
-	INITIAL_CAPACITY = 10
+	INITIAL_CAPACITY = 20
 )
 
 func loadInventoryFromDisk(cfg *TConfig) error {
@@ -28,15 +29,17 @@ func loadInventoryFromDisk(cfg *TConfig) error {
 	return json.Unmarshal(fileData, &cfg.Inventory)
 }
 
-func (cfg *TConfig) AddToInventory(item InventoryItemInfo) error {
-	if _, exists := cfg.Inventory.Items[item.Name]; exists {
-		newQuantity := cfg.Inventory.Items[item.Name].Quantity + item.Quantity
-		item.Quantity = newQuantity
+func (cfg *TConfig) UseItem(itemName string) error {
+
+	err := cfg.Inventory.canUseItem(itemName)
+	if err != nil {
+		return err
 	}
 
-	cfg.Inventory.Items[item.Name] = item
+	item := cfg.Inventory.Items[itemName]
+	cfg.Inventory.handleChangeInventoryItemQuantity(itemName, item.GetQuantity()-1)
 
-	err := writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
+	err = writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
 	if err != nil {
 		return err
 	}
@@ -44,34 +47,47 @@ func (cfg *TConfig) AddToInventory(item InventoryItemInfo) error {
 	return nil
 }
 
-func (cfg *TConfig) UseItem(itemName string) error {
-	notFound := errors.New("Item not found in inventory")
-	if _, exists := cfg.Inventory.Items[itemName]; !exists {
-		return notFound
+func (cfg *TConfig) SellItem(itemName string, quantity int) error {
+
+	err := cfg.Inventory.canSellItem(itemName, quantity)
+	if err != nil {
+		return err
 	}
 
-	if !cfg.Inventory.Items[itemName].IsConsumable {
-		return errors.New("Item is not consumable")
+	newQuantity := cfg.Inventory.Items[itemName].GetQuantity() - quantity
+	cfg.Inventory.handleChangeInventoryItemQuantity(itemName, newQuantity)
+	cfg.Inventory.Balance += float64(quantity) * cfg.Inventory.Items[itemName].GetSellPrice()
+
+	err = writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
+	if err != nil {
+		return err
 	}
 
-	if cfg.Inventory.Items[itemName].Quantity <= 0 {
-		delete(cfg.Inventory.Items, itemName)
-		return notFound
+	return nil
+}
+
+func (cfg *TConfig) BuyItem(name string, quantity int) error {
+
+	item, err := cfg.Shop.Purchase(name, quantity)
+	if err != nil {
+		return err
 	}
 
-	newItem := cfg.Inventory.Items[itemName]
-	newItem.Quantity--
+	priceToPay := float64(item.Item.GetQuantity()) * item.Price
+	if !cfg.Inventory.haveTheRequiredBalance(priceToPay) {
+		required := priceToPay - cfg.Inventory.Balance
+		return fmt.Errorf("insufficient funds. You need $%.2f more, to buy %d %s", required, item.Item.GetQuantity(), item.Item.GetBaseInfo().Name)
 
-	if newItem.Quantity <= 0 {
-		delete(cfg.Inventory.Items, itemName)
+	}
+	if !cfg.Inventory.hasTheRequiredSpace(item.Item.GetQuantity()) {
+		required := item.Item.GetQuantity() - cfg.Inventory.GetAvailableInventorySpace()
+		return fmt.Errorf("insufficient space. You only	have space for %d more items", required)
 	}
 
-	cfg.Inventory.Items[itemName] = newItem
-	if newItem.Quantity <= 0 {
-		delete(cfg.Inventory.Items, itemName)
-	}
+	cfg.Inventory.Balance -= priceToPay
+	cfg.Inventory.handleAddItem(item.Item)
 
-	err := writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
+	err = writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
 	if err != nil {
 		return err
 	}
@@ -81,46 +97,19 @@ func (cfg *TConfig) UseItem(itemName string) error {
 
 func (cfg *TConfig) initInventory() error {
 	fmt.Println("PokeCLI: Initializing inventory...")
-	pokedex := getPokedexInfo()
-	pokeball := getPokeballInfo()
+	pokedex := items.CreatePokedex()
+	pokeballs := items.CreatePokeball(10, true, 0, items.ITEM_POKEBALL)
 
-	err := cfg.AddToInventory(InventoryItemInfo{
-		ItemBaseInfo: pokedex,
-		Quantity:     1,
-		IsConsumable: false,
-		CanBeSold:    pokedex.Price > 0,
-		SellPrice:    pokedex.Price * 0.7,
-	})
-	if err != nil {
-		return err
-	}
+	cfg.Inventory.handleAddItem(pokeballs)
+	cfg.Inventory.handleAddItem(pokedex)
+	cfg.Inventory.Balance = INITIAL_BALANCE
+	cfg.Inventory.MaxCapacity = INITIAL_CAPACITY
 
-	err = cfg.AddToInventory(InventoryItemInfo{
-		ItemBaseInfo: pokeball,
-		Quantity:     10,
-		IsConsumable: true,
-		CanBeSold:    pokeball.Price > 0,
-		SellPrice:    pokeball.Price * 0.7,
-	})
-	if err != nil {
-		return err
-	}
-
-	err = cfg.setInitialValues()
+	err := writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("PokeCLI: Inventory initialized successfully")
-	return nil
-}
-
-func (cfg *TConfig) setInitialValues() error {
-	cfg.Inventory.Balance = INITIAL_BALANCE
-	cfg.Inventory.MaxCapacity = INITIAL_CAPACITY
-	err := writeDataToDisk(cfg.Inventory, INVENTORY_FILE)
-	if err != nil {
-		return err
-	}
 	return nil
 }

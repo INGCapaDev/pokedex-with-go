@@ -1,21 +1,19 @@
 package config
 
-type ItemBaseInfo struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Price       float64 `json:"price"`
-}
+import (
+	"github.com/ingcapadev/pokedex-with-go/internal/items"
+)
 
-type InventoryItemInfo struct {
-	ItemBaseInfo
-	Quantity     int     `json:"quantity"`
-	IsConsumable bool    `json:"is_consumable"`
-	CanBeSold    bool    `json:"can_be_sold"`
-	SellPrice    float64 `json:"sell_price"`
+type InventoryItem interface {
+	GetBaseInfo() items.ItemBaseInfo
+	GetSellPrice() float64
+	GetCanBeSold() bool
+	GetQuantity() int
+	SetQuantity(int)
 }
 
 type Inventory struct {
-	Items       map[string]InventoryItemInfo `json:"items"`
-	Balance     float64                      `json:"balance"`
-	MaxCapacity int                          `json:"max_capacity"`
+	Items       map[string]InventoryItem `json:"items"`
+	Balance     float64                  `json:"balance"`
+	MaxCapacity int                      `json:"max_capacity"`
 }

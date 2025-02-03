@@ -15,6 +15,7 @@ const (
 func GetConfig(pokeClient pokeapi.Client) (*TConfig, error) {
 	cfg := newConfig(pokeClient)
 	err := cfg.loadDataFromDisk()
+
 	if err != nil {
 		return cfg, err
 	}
@@ -24,7 +25,8 @@ func GetConfig(pokeClient pokeapi.Client) (*TConfig, error) {
 func newConfig(pokeClient pokeapi.Client) *TConfig {
 	return &TConfig{
 		PokeapiClient:    pokeClient,
-		Inventory:        Inventory{Items: make(map[string]InventoryItemInfo), Balance: INITIAL_BALANCE, MaxCapacity: INITIAL_CAPACITY},
+		Inventory:        Inventory{Items: make(map[string]InventoryItem), Balance: INITIAL_BALANCE, MaxCapacity: INITIAL_CAPACITY},
+		Shop:             *NewShop(),
 		CaughtPokemon:    make(map[string]pokeapi.Pokemon),
 		NextLocationsURL: nil,
 		PrevLocationsURL: nil,
