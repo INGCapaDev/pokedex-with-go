@@ -25,21 +25,18 @@ func (inv *Inventory) UnmarshalJSON(data []byte) error {
 
 	for name, itemData := range temp.Items {
 		var item InventoryItem
-
-		// Try unmarshalling into the correct concrete type
 		if err := json.Unmarshal(itemData, &item); err == nil {
 			inv.Items[name] = item
-		} else {
-			// Handle each type manually
-			// Pokeball
-			var pokeball items.Pokeball
-			if err := json.Unmarshal(itemData, &pokeball); err == nil {
-				inv.Items[name] = &pokeball
-				continue
-			}
-
-			return fmt.Errorf("failed to unmarshal item %s: %v", name, err)
+			continue
 		}
+
+		var pokeball items.Pokeball
+		if err := json.Unmarshal(itemData, &pokeball); err == nil {
+			inv.Items[name] = &pokeball
+			continue
+		}
+
+		return fmt.Errorf("failed to unmarshal item %s: %v", name, "unknown item type or invalid data")
 	}
 
 	return nil

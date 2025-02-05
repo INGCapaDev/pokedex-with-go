@@ -10,9 +10,24 @@ const (
 	ITEM_POKEDEX                 = "Pokedex"
 )
 
-func GetPokeballInfo() ItemBaseInfo {
+func GetPokeballInfo(pokeball PokeballType) ItemBaseInfo {
+	var name string
+
+	switch pokeball {
+	case ITEM_POKEBALL:
+		name = string(pokeball)
+	case ITEM_GREATBALL:
+		name = string(pokeball)
+	case ITEM_MASTERBALL:
+		name = string(pokeball)
+	case ITEM_ULTRABALL:
+		name = string(pokeball)
+	default:
+		name = string(ITEM_POKEBALL)
+	}
+
 	return ItemBaseInfo{
-		Name:         string(ITEM_POKEBALL),
+		Name:         name,
 		IsConsumable: true,
 		Description:  "A device for catching wild Pokémon. It is thrown like a ball at a Pokémon, comfortably encapsulating its target.",
 	}
@@ -34,7 +49,7 @@ func CreatePokeball(quantity int, canBeSold bool, sellPrice float64, pokeball Po
 	}
 	return &Pokeball{
 		BaseItem: BaseItem{
-			ItemBaseInfo: GetPokeballInfo(),
+			ItemBaseInfo: GetPokeballInfo(pokeball),
 			Quantity:     quantity,
 			SellPrice:    sellPrice,
 			CanBeSold:    canBeSold,
@@ -57,29 +72,5 @@ func CreatePokedex() *BaseItem {
 		Quantity:     1,
 		SellPrice:    0,
 		CanBeSold:    false,
-	}
-}
-
-func GetMasterballInfo() ItemBaseInfo {
-	return ItemBaseInfo{
-		Name:         string(ITEM_MASTERBALL),
-		IsConsumable: true,
-		Description:  "The best Poké Ball with the ultimate level of performance. With it, you will catch any wild Pokémon without fail.",
-	}
-}
-
-func GetGreatballInfo() ItemBaseInfo {
-	return ItemBaseInfo{
-		Name:         string(ITEM_GREATBALL),
-		IsConsumable: true,
-		Description:  "A good, high-performance Poké Ball that provides a higher Pokémon catch rate than a standard Poké Ball.",
-	}
-}
-
-func GetUltraballInfo() ItemBaseInfo {
-	return ItemBaseInfo{
-		Name:         string(ITEM_ULTRABALL),
-		IsConsumable: true,
-		Description:  "An ultra-high-performance Poké Ball that provides a higher Pokémon catch rate than a Great Ball.",
 	}
 }

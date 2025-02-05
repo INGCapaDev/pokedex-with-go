@@ -33,19 +33,65 @@ func cmdShop(cfg *config.TConfig, args ...string) error {
 }
 
 func cmdShopList(cfg *config.TConfig, args ...string) error {
-	fmt.Print("Shop list\n")
+	if len(args) > 0 {
+		return fmt.Errorf("Invalid number of arguments. Usage: %s %s", SHOP_CMD, SHOP_CMD_LIST)
+	}
+
+	cfg.Shop.PrintShop()
 	return nil
 }
 
+func askForConfirmation() bool {
+	fmt.Printf("\nAre you sure you want to buy the item? (Y/n): ")
+	var confirmation string
+	fmt.Scanln(&confirmation)
+	return confirmation == "y" || confirmation == "Y" || confirmation == ""
+}
+
+func askForQuantity() (int, error) {
+	fmt.Printf("\nHow many items do you want to buy? : ")
+	var quantity int
+	_, err := fmt.Scanln(&quantity)
+	if err != nil {
+		return 0, err
+	}
+	if quantity <= 0 {
+		return 0, fmt.Errorf("Quantity must be greater than 0")
+	}
+	return quantity, nil
+}
+
 func cmdShopBuy(cfg *config.TConfig, args ...string) error {
-
 	if len(args) == 0 {
-
 		fmt.Printf("\nUsage: %s %s <item-name>", SHOP_CMD, SHOP_CMD_BUY)
 		return fmt.Errorf("You must provide an item to buy")
 	}
-	fmt.Print("Shop buy\n")
-	fmt.Print("Buying item: ", args[0])
+
+	if len(args) != 1 {
+		fmt.Printf("\nUsage: %s %s <item-name>", SHOP_CMD, SHOP_CMD_BUY)
+		return fmt.Errorf("You must provide an item to buy")
+	}
+
+	//ask for confirmation to buy the item
+	confirmed := askForConfirmation()
+	if !confirmed {
+		fmt.Printf("\nOperation cancelled.\n\n")
+		return nil
+	}
+
+	//ask for quantity
+	quantity, err := askForQuantity()
+	if err != nil {
+		return fmt.Errorf("Invalid quantity. %v, try again with a valid integer", err)
+	}
+
+	fmt.Printf("\nBuying item: %s... \n", args[0])
+	err = cfg.BuyItem(args[0], quantity)
+	if err != nil {
+		return fmt.Errorf("Error buying item: %v", err)
+	}
+	fmt.Printf("\n%s bought successfully!\n\n", args[0])
+
 	return nil
 }
 
